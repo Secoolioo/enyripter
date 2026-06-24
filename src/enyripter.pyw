@@ -3488,13 +3488,21 @@ def _build_exe():
     """Baut eine eigenstaendige enyripter.exe via PyInstaller (Bonus)."""
     import subprocess
     here = os.path.abspath(__file__)
+    here_dir = os.path.dirname(here)
     _safe_print("Installiere PyInstaller (falls noetig) ...")
     subprocess.call([sys.executable, "-m", "pip", "install", "pyinstaller"])
     _safe_print("Baue enyripter.exe (kann 1-2 Minuten dauern) ...")
-    rc = subprocess.call([
+    args = [
         sys.executable, "-m", "PyInstaller", "--onefile", "--noconsole",
-        "--name", "enyripter", "--collect-all", "cryptography", here,
-    ])
+        "--name", "enyripter", "--collect-all", "cryptography",
+    ]
+    # App-Icon einbetten, falls icon.ico daneben liegt (wird aus bild.png erzeugt)
+    icon = os.path.join(here_dir, "icon.ico")
+    if os.path.exists(icon):
+        args += ["--icon", icon]
+        _safe_print("Verwende Icon: %s" % icon)
+    args.append(here)
+    rc = subprocess.call(args)
     if rc == 0:
         _safe_print("Fertig! Die Datei liegt unter:  dist/enyripter.exe")
     else:

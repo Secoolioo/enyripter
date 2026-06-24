@@ -200,8 +200,12 @@ src/                   ← der komplette Quellcode
 ├─ eny_portable.py     ← „Gegenprogramm" (eigenständiger Ver-/Entschlüsseler)
 ├─ test_gui_smoke.py   ← GUI-Test (headless)
 ├─ requirements.txt    ← Abhängigkeiten (Entwicklung)
+├─ bild.png / icon.ico ← App-Logo + daraus erzeugtes Icon (wird in die .exe eingebettet)
 └─ enyrpter1.py / enyrpter2.py  ← alte Versionen (nur Kodierung, KEINE Verschlüsselung)
 ```
+
+> Das Icon der `.exe` wird aus `src/bild.png` erzeugt (`src/icon.ico`) und beim
+> `--build-exe` automatisch eingebettet — in Explorer und Taskleiste sichtbar.
 
 ### Das Gegenprogramm (`src/eny_portable.py`)
 
