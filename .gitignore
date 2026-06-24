@@ -1,0 +1,18 @@
+# Python
+__pycache__/
+*.pyc
+*.pyo
+
+# PyInstaller-Build-Artefakte (die fertige exe gehoert in GitHub-Releases, nicht in den Quelltree)
+build/
+dist/
+*.spec
+
+# verschluesselte Test-Dateien
+*.eny
+
+# OS / Editor
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/
