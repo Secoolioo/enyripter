@@ -44,62 +44,62 @@ selbst wenn jemand den kompletten Quellcode hat.
 
 ---
 
-## 🚀 Start — nur EINE Datei
+## 🚀 Start
 
-Für die Weitergabe / GitHub brauchst du **nur eine einzige Datei: [`enyripter.pyw`](enyripter.pyw)**.
-Sie enthält alles (Kern, GUI, Terminal, Launcher) und ist komplett eigenständig.
+Das Repo enthält genau zwei Dinge, die zählen:
 
-**Doppelklick auf `enyripter.pyw`:**
-1. Es erscheint **kein schwarzes Terminalfenster**.
-2. Falls die benötigte Komponente `cryptography` fehlt, wird sie **automatisch heruntergeladen**
-   (einmalig, mit kleinem Fortschritts-Fenster — Internet nötig).
-3. Danach kommt die **Auswahl: GUI oder Terminal**. Wählst du Terminal, öffnet sich dafür ein
-   eigenes Konsolenfenster.
+| Was | Wofür |
+|-----|-------|
+| **`enyripter.exe`** | Einfach **doppelklicken** — läuft **ohne installiertes Python**. Es erscheint kein Terminal, sondern direkt die Auswahl **GUI** oder **Terminal**. |
+| **`src/`** | Der **komplette Quellcode** (für Entwickler, zum Selber-Bauen). |
 
-> Falls beim Doppelklick doch ein Konsolenfenster aufgeht: `.pyw` ist dann nicht mit
-> `pythonw.exe` verknüpft. Einmalig per Rechtsklick → *Öffnen mit* → `pythonw.exe` wählen.
-> Voraussetzung ist eine installierte Python-Version (ab 3.10).
+### Variante A — fertige `.exe` (am einfachsten)
 
-Per Kommandozeile (optional):
+`enyripter.exe` herunterladen und **doppelklicken**. Kein Python, keine Installation, kein
+Download nötig — alles ist eingebaut. Es kommt sofort das Menü GUI / Terminal.
+
+### Variante B — mit Python (Quellcode in `src/`)
+
+Die eine, eigenständige Datei ist [`src/enyripter.pyw`](src/enyripter.pyw). Doppelklick →
+kein Terminal → (falls `cryptography` fehlt, wird es **einmalig automatisch nachgeladen**) →
+Menü GUI / Terminal. Oder per Kommandozeile:
 
 ```bash
-python enyripter.pyw            # Auswahl-Fenster (GUI oder Terminal)
-python enyripter.pyw --gui      # direkt: GUI
-python enyripter.pyw --cli      # direkt: Terminal
-python enyripter.pyw --selftest # Krypto-Self-Test
-python enyripter.pyw --version
-python enyripter.pyw --build-exe  # baut eine eigenständige .exe (siehe unten)
+python src/enyripter.pyw            # Auswahl-Fenster (GUI oder Terminal)
+python src/enyripter.pyw --gui      # direkt: GUI
+python src/enyripter.pyw --cli      # direkt: Terminal
+python src/enyripter.pyw --selftest # Krypto-Self-Test
+python src/enyripter.pyw --version
+python src/enyripter.pyw --build-exe  # die enyripter.exe neu bauen (PyInstaller)
 ```
 
-## 📦 Als echte `.exe` weitergeben (kein Python nötig)
+> Doppelklick auf `.pyw` öffnet doch eine Konsole? Dann ist `.pyw` nicht mit `pythonw.exe`
+> verknüpft. Einmalig Rechtsklick → *Öffnen mit* → `pythonw.exe`. Benötigt Python ≥ 3.10.
 
-Wer eine `.exe` will, die **ohne installiertes Python** läuft, baut sie mit einem Befehl aus
-derselben Datei:
+### `.exe` selbst neu bauen
 
 ```bash
-python enyripter.pyw --build-exe
+python src/enyripter.pyw --build-exe
 ```
 
-Das installiert bei Bedarf PyInstaller und erzeugt **`dist/enyripter.exe`** (~16 MB, alle
-Abhängigkeiten gebündelt — es muss dann nichts mehr nachgeladen werden). Doppelklick auf die
-`.exe` → Menü GUI/Terminal, ganz ohne Python.
+Installiert bei Bedarf PyInstaller und erzeugt `dist/enyripter.exe` (~16 MB, alle
+Abhängigkeiten gebündelt). Diese Datei wird dann oben als `enyripter.exe` abgelegt.
 
-> Tipp: Lade auf GitHub den **Quellcode `enyripter.pyw`** ins Repo und die fertige
-> **`enyripter.exe`** unter *Releases* hoch (Binärdateien gehören nicht in den Quell-Tree).
+### Entwicklung
 
-### Entwicklung (mehrere Dateien)
-
-`enyripter.pyw` wird aus den Modulen `eny_core.py` / `eny_cli.py` / `eny_gui.py` +
-`_frag_header.py` / `_frag_launch.py` erzeugt. Nach Änderungen neu zusammenbauen:
+`src/enyripter.pyw` wird aus den Modulen in `src/` (`eny_core.py` / `eny_cli.py` /
+`eny_gui.py` + `_frag_header.py` / `_frag_launch.py`) zusammengebaut. Nach Änderungen:
 
 ```bash
-python build_single_file.py
+python src/build_single_file.py     # erzeugt src/enyripter.pyw neu
+python src/eny_core.py              # Krypto-Self-Test
+python src/test_gui_smoke.py        # GUI-Test (headless)
 ```
 
 **Installation der Abhängigkeiten** (das Tool läuft auch mit nur `cryptography`):
 
 ```bash
-pip install -r requirements.txt
+pip install -r src/requirements.txt
 ```
 
 | Paket          | Pflicht? | Wofür                                              |
@@ -183,37 +183,39 @@ deren dekodierte Bytes mit `ENY3` beginnen.
 
 ---
 
-## 📁 Dateien
+## 📁 Struktur des Repos
 
-| Datei              | Zweck                                          |
-|--------------------|------------------------------------------------|
-| **`enyripter.pyw`**| **DIE Datei für GitHub** — alles in einem, auto-Installer, Doppelklick-fähig |
-| `build_single_file.py` | baut `enyripter.pyw` aus den Modulen        |
-| `_frag_header.py`  | Fragment: Auto-Installer-Kopf (wird eingebaut) |
-| `_frag_launch.py`  | Fragment: Launcher/Chooser (wird eingebaut)    |
-| `enyrpter3.py`     | (Entwicklung) Launcher + Modus-Auswahl, modular |
-| `eny_core.py`      | (Entwicklung) Krypto-Kern + eigener Self-Test  |
-| `eny_gui.py`       | (Entwicklung) GUI-Modus                        |
-| `eny_cli.py`       | (Entwicklung) Terminal-Modus                   |
-| `eny_portable.py`  | **Das „Gegenprogramm"** — eigenständiger Ver-/Entschlüsseler |
-| `test_gui_smoke.py`| automatischer GUI-Test (headless)              |
-| `requirements.txt` | Abhängigkeiten (für die Entwicklung)           |
+```
+enyripter.exe          ← fertige App zum Doppelklicken (kein Python nötig)
+README.md
+src/                   ← der komplette Quellcode
+├─ enyripter.pyw       ← die eine, eigenständige Datei (Auto-Installer + Menü)
+├─ build_single_file.py← baut src/enyripter.pyw aus den Modulen
+├─ _frag_header.py     ← Fragment: Auto-Installer-Kopf
+├─ _frag_launch.py     ← Fragment: Launcher/Chooser
+├─ eny_core.py         ← Krypto-Kern + eigener Self-Test
+├─ eny_gui.py          ← GUI-Modus
+├─ eny_cli.py          ← Terminal-Modus
+├─ enyrpter3.py        ← modularer Launcher (Entwicklung)
+├─ eny_portable.py     ← „Gegenprogramm" (eigenständiger Ver-/Entschlüsseler)
+├─ test_gui_smoke.py   ← GUI-Test (headless)
+├─ requirements.txt    ← Abhängigkeiten (Entwicklung)
+└─ enyrpter1.py / enyrpter2.py  ← alte Versionen (nur Kodierung, KEINE Verschlüsselung)
+```
 
-`enyrpter1.py` / `enyrpter2.py` sind die alten Versionen und bleiben unangetastet.
-
-### Das Gegenprogramm (`eny_portable.py`)
+### Das Gegenprogramm (`src/eny_portable.py`)
 
 Eine **eigenständige** Datei, die das ENY3-Format unabhängig vom Haupttool
 implementiert (nur stdlib + `cryptography`). Beweist: mit Format **und Passwort**
 kann auch ein anderes Programm entschlüsseln — ohne Passwort niemand.
 
 ```bash
-echo "<cipher>" | python eny_portable.py dec            # entschlüsseln (fragt Passwort)
-python eny_portable.py enc -m "Hallo" --cipher cascade  # verschlüsseln
-python eny_portable.py info -m "<cipher>"               # Metadaten anzeigen
+echo "<cipher>" | python src/eny_portable.py dec            # entschlüsseln (fragt Passwort)
+python src/eny_portable.py enc -m "Hallo" --cipher cascade  # verschlüsseln
+python src/eny_portable.py info -m "<cipher>"               # Metadaten anzeigen
 ```
 
-Container von `enyrpter3.py` und `eny_portable.py` sind **vollständig
+Container von `enyripter` und `eny_portable.py` sind **vollständig
 austauschbar** (in beide Richtungen getestet, inkl. Keyfile).
 
 ---
@@ -221,6 +223,6 @@ austauschbar** (in beide Richtungen getestet, inkl. Keyfile).
 ## 🧪 Tests
 
 ```bash
-python eny_core.py          # Krypto-Self-Test (Round-Trips, Manipulation, Keyfile, ...)
-python test_gui_smoke.py    # GUI baut sich auf + echte Encrypt→Decrypt-Runde
+python src/eny_core.py          # Krypto-Self-Test (Round-Trips, Manipulation, Keyfile, ...)
+python src/test_gui_smoke.py    # GUI baut sich auf + echte Encrypt→Decrypt-Runde
 ```

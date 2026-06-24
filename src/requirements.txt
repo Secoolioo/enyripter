@@ -1,0 +1,14 @@
+# enyripter v3 — Abhaengigkeiten
+#
+# PFLICHT (echte Verschluesselung):
+cryptography>=42.0
+
+# OPTIONAL (staerkere Schluesselableitung; sonst Fallback auf scrypt aus der stdlib):
+argon2-cffi>=23.1
+
+# OPTIONAL (Zwischenablage im Terminal-Modus; GUI nutzt Tk-Clipboard ohne Extra-Paket):
+pyperclip>=1.8
+
+# Hinweis: tkinter und PIL/Pillow werden nur fuer den GUI-Modus gebraucht.
+#   Pillow ist optional (nur falls man Hintergrundbilder erweitern will):
+# Pillow>=10.0
